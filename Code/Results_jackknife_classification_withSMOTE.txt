@@ -1,0 +1,132 @@
+##------ Tue Jul 18 07:04:58 2017 ------##
+2017-07-18 07:04:58 >> Training set entries: 304 
+2017-07-18 07:04:58 >> Test set entries: 64 
+2017-07-18 07:04:58 >> Featurizing ...
+2017-07-18 07:04:58 >> Done ( from cached file: featurized1_304_posTrimer.rds )
+2017-07-18 07:04:58 >> Done ( from cached file: testFile1_64_posTrimer.rds )
+2017-07-18 07:04:58 >> Total features:  19422 
+2017-07-18 07:04:59 >> Computing random forest ...
+2017-07-18 07:05:03 >> Done ( from cached file: rfmodel_304_posTrimer.rds )
+2017-07-18 07:05:03 >> Calculating test features ...  
+2017-07-18 07:07:24 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2500 
+Accuracy(Test set):  0.9454023 
+F1-Score (Test set):  0.9466292 
+Precision(Test set):  0.9258242 
+Recall   (Test set):  0.9683908 
+Sensitivity(Test set):  0.9683908 
+Specificity(Test set):  0.9224138 
+MCC(Test set):  0.8917476 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 07:34:42 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2450 
+Accuracy(Test set):  0.9454023 
+F1-Score (Test set):  0.9466292 
+Precision(Test set):  0.9258242 
+Recall   (Test set):  0.9683908 
+Sensitivity(Test set):  0.9683908 
+Specificity(Test set):  0.9224138 
+MCC(Test set):  0.8917476 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 08:01:24 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2400 
+Accuracy(Test set):  0.9482759 
+F1-Score (Test set):  0.9492958 
+Precision(Test set):  0.9309392 
+Recall   (Test set):  0.9683908 
+Sensitivity(Test set):  0.9683908 
+Specificity(Test set):  0.9281609 
+MCC(Test set):  0.8972781 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 08:27:23 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2350 
+Accuracy(Test set):  0.9497126 
+F1-Score (Test set):  0.9507736 
+Precision(Test set):  0.9311295 
+Recall   (Test set):  0.9712644 
+Sensitivity(Test set):  0.9712644 
+Specificity(Test set):  0.9281609 
+MCC(Test set):  0.900262 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 08:53:06 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2300 
+Accuracy(Test set):  0.9454023 
+F1-Score (Test set):  0.9464789 
+Precision(Test set):  0.9281768 
+Recall   (Test set):  0.9655172 
+Sensitivity(Test set):  0.9655172 
+Specificity(Test set):  0.9252874 
+MCC(Test set):  0.8915263 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 09:17:58 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2250 
+Accuracy(Test set):  0.9497126 
+F1-Score (Test set):  0.9506347 
+Precision(Test set):  0.933518 
+Recall   (Test set):  0.9683908 
+Sensitivity(Test set):  0.9683908 
+Specificity(Test set):  0.9310345 
+MCC(Test set):  0.9000535 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 09:41:55 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2200 
+Accuracy(Test set):  0.9482759 
+F1-Score (Test set):  0.9492958 
+Precision(Test set):  0.9309392 
+Recall   (Test set):  0.9683908 
+Sensitivity(Test set):  0.9683908 
+Specificity(Test set):  0.9281609 
+MCC(Test set):  0.8972781 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 10:05:06 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2150 
+Accuracy(Test set):  0.954023 
+F1-Score (Test set):  0.9549296 
+Precision(Test set):  0.9364641 
+Recall   (Test set):  0.9741379 
+Sensitivity(Test set):  0.9741379 
+Specificity(Test set):  0.933908 
+MCC(Test set):  0.9087817 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 10:27:56 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2100 
+Accuracy(Test set):  0.9497126 
+F1-Score (Test set):  0.9509116 
+Precision(Test set):  0.9287671 
+Recall   (Test set):  0.9741379 
+Sensitivity(Test set):  0.9741379 
+Specificity(Test set):  0.9252874 
+MCC(Test set):  0.9005004 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 10:50:02 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2050 
+Accuracy(Test set):  0.9511494 
+F1-Score (Test set):  0.9522472 
+Precision(Test set):  0.9313187 
+Recall   (Test set):  0.9741379 
+Sensitivity(Test set):  0.9741379 
+Specificity(Test set):  0.9281609 
+MCC(Test set):  0.903254 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+2017-07-18 11:11:26 >> Calculating leave one out result: 
+Results using SMOTE:
+For Features Nubers: 2000 
+Accuracy(Test set):  0.9454023 
+F1-Score (Test set):  0.9466292 
+Precision(Test set):  0.9258242 
+Recall   (Test set):  0.9683908 
+Sensitivity(Test set):  0.9683908 
+Specificity(Test set):  0.9224138 
+MCC(Test set):  0.8917476 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+> 
