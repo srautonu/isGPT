@@ -2,10 +2,10 @@ source('base.R')
 source('svmCV.R')
 
 # jackknife
-nFolds = length(features[,1])
+#nFolds = length(features[,1])
 
 # 10 fold CV
-#nFolds = 10
+nFolds = 10
 
 # random shuffle of features
 features <- features[sample(nrow(features)),]
@@ -14,17 +14,17 @@ bestPerf = NULL;
 bestParams = NULL;
 accData = NULL;
 
+svmCostList = c(0.30, 1, 3, 10, 30, 100);
+featureCountList = seq(from=2800, to=1500, by=-50); 
+
 cat(as.character(Sys.time()),">> Entering cross validation. Folds = ", nFolds, " ...\n");
 
-maxFeatureCount = 2150
-#for (maxFeatureCount in seq(from=2000, to=2500, by=10)) 
+for (maxFeatureCount in featureCountList) 
 {
   filteringRes = featurefiltering(features, testFeatures, rankedFeatures, maxFeatureCount);
   trainingSet = filteringRes$trainingSet;
 
-  svmCostList = c(0.01, 0.03, 0.10, 0.30, 1, 3, 10, 30, 100);
-  svmC = 3;
-  #for (svmC in svmCostList) 
+  for (svmC in svmCostList) 
   {
     perf = svmCV(protection ~ ., trainingSet, svmCost = svmC, cross = nFolds);
 

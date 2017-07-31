@@ -8,7 +8,7 @@ bestParams = NULL;
 accData = NULL;
 
 svmCostList = c(0.30, 1, 3, 10, 30, 100);
-featureCountList = seq(from=2000, to=2500, by=50); 
+featureCountList = seq(from=2800, to=1500, by=-50); 
 
 cat(as.character(Sys.time()),">> Entering independent validation ...\n");
 
