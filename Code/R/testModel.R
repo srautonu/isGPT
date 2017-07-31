@@ -2,6 +2,8 @@ library(DMwR)
 
 source('base.R');
 
+svmFile = "Khaled_SVM_Classification_TenFoldCV_NoSMOTE_GoodITPerf.rds";
+
 cat(as.character(Sys.time()),">> Reading SVM model from", svmFile, "...\n");
 svmmodel = readRDS(svmFile);
 cat(as.character(Sys.time()),">> Done\n");

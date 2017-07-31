@@ -50,7 +50,7 @@ featurization <-
                 features[countToken] = integer(nrow(features));
                 nSeq = nSeq + 1;
               }
-              features[i,countToken] = features[i,countToken] + 1;
+              features[i,countToken] = features[i,countToken] + 1/(length(strSeq) - k + 1);
             }
             
             # update the posorder feature count
@@ -94,7 +94,7 @@ featurization <-
               nGap = nGap + 1;
             }
             
-            features[i,token] = features[i,token] + 1;
+            features[i,token] = features[i,token] + 1/(length(strSeq) - k -1);
           }
         }
       }

@@ -1,7 +1,6 @@
 library(e1071)
 library(ROCR)
 library(randomForest)
-library(DMwR)
 
 source('featurization.R');
 source('featurefiltering.R');
@@ -23,9 +22,13 @@ nTest = length(nTestSet[,1])
 
 # File names #
 rfmodelFile = "RFModel_FullFeatureSet.rds";
+rankedFeaturesFile = "rankedFeatures.rds";
+
+#featureFile = "trainingset_NormFeaturized.rds";
+featureFile = "trainingset_WEKA_SMOTE217_NormFeaturized.rds";
+testFile = "testingset_NormFeaturized.rds";
+
 svmFile     = paste("svm_", as.character(nTrain), fScheme, ".rds", sep = "");
-featureFile = paste("featurized1_", as.character(nTrain), fScheme, ".rds", sep = "");
-testFile = paste("testFile1_", as.character(nTest), fScheme, ".rds", sep = "");
 outFile     = paste("out_", as.character(nTrain), fScheme, ".csv", sep = "");
 
 cat(as.character(Sys.time()),">> Featurizing ...\n");
@@ -33,7 +36,9 @@ if (!file.exists(featureFile)) {
   alldata = rbind(nTrainingSet, nTestSet)
   featurizeddata = featurization(alldata$Sequence, alldata$Class, amins, seqorder = 3, gap = 15, posorder = 3);
   features = featurizeddata[1:nTrain,]; 
-  testFeatures = featurizeddata[(nTrain+1):(nTrain+nTest),]; 
+  testFeatures = featurizeddata[(nTrain+1):(nTrain+nTest),];
+  saveRDS(features, featureFile);
+  saveRDS(testFeatures, testFile);
   cat(as.character(Sys.time()),">> Done.\n");
 } else {
   features = readRDS(featureFile);
@@ -43,16 +48,24 @@ if (!file.exists(featureFile)) {
 }
 cat(as.character(Sys.time()),">> Total features: ", length(features[1,]), "\n");
 
-cat(as.character(Sys.time()),">> Computing random forest ...\n");
-if (!file.exists(rfmodelFile)) {
-  rfmodel = randomForest(protection ~ ., features[1:nTrain,], importance=TRUE);
-  saveRDS(rfmodel, rfmodelFile);
-  cat(as.character(Sys.time()),">> Done.\n");
+if (!file.exists(rankedFeaturesFile)) {
+  cat(as.character(Sys.time()),">> Computing random forest ...\n");
+  if (!file.exists(rfmodelFile)) {
+    rfmodel = randomForest(protection ~ ., features[1:nTrain,], importance=TRUE);
+    saveRDS(rfmodel, rfmodelFile);
+    cat(as.character(Sys.time()),">> Done.\n");
+  } else {
+    rfmodel = readRDS(rfmodelFile);
+    cat(as.character(Sys.time()),">> Done ( from cached file:", rfmodelFile, ")\n");
+  }
+  
+  cat(as.character(Sys.time()),">> Computing feature ranking ...\n");
+  rankedFeatures = rownames(rfmodel$importance[order(-rfmodel$importance[,3]),])
+  cat(as.character(Sys.time()),">> Done\n");
+
 } else {
-  rfmodel = readRDS(rfmodelFile);
-  cat(as.character(Sys.time()),">> Done ( from cached file:", rfmodelFile, ")\n");
+  cat(as.character(Sys.time()),">> Computing feature ranking ...\n");
+  rankedFeatures = readRDS(rankedFeaturesFile);
+  cat(as.character(Sys.time()),">> Done ( from cached file:", rankedFeaturesFile, ")\n");
+  
 }
-
-rankedFeatures = rownames(rfmodel$importance[order(-rfmodel$importance[,3]),])
-
-cat(as.character(Sys.time()),">> Calculating test features ... ","\n")
