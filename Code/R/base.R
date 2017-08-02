@@ -25,7 +25,7 @@ rfmodelFile = "RFModel_FullFeatureSet.rds";
 rankedFeaturesFile = "rankedFeatures.rds";
 
 #featureFile = "trainingset_NormFeaturized.rds";
-featureFile = "trainingset_WEKA_SMOTE217_NormFeaturized.rds";
+featureFile = "trainingset_WEKA_SMOTE300_NormFeaturized.rds";
 testFile = "testingset_NormFeaturized.rds";
 
 svmFile     = paste("svm_", as.character(nTrain), fScheme, ".rds", sep = "");
