@@ -24,9 +24,8 @@ nTest = length(nTestSet[,1])
 rfmodelFile = "RFModel_FullFeatureSet.rds";
 rankedFeaturesFile = "rankedFeatures.rds";
 
-#featureFile = "trainingset_NormFeaturized.rds";
-featureFile = "trainingset_WEKA_SMOTE300_NormFeaturized.rds";
-testFile = "testingset_NormFeaturized.rds";
+featureFile = "featurized_comb_SMOTED.rds";
+testFile = "testFeaturized_comb.rds";
 
 svmFile     = paste("svm_", as.character(nTrain), fScheme, ".rds", sep = "");
 outFile     = paste("out_", as.character(nTrain), fScheme, ".csv", sep = "");
