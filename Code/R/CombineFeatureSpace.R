@@ -1,47 +1,44 @@
-library(e1071)
-library(ROCR)
-library(randomForest)
+#library(randomForest)
 
 source('./combineFeatures.R');
 
 timestamp();
 
-nTrainData = 1152;
+#nTrainData = 1152;
 fScheme = "_comb";
 
-rankedFeaturesFile = paste("ff_", as.character(nTrainData), fScheme, ".rds", sep = "");
-featureFile        = paste("featurized_", as.character(nTrainData), fScheme, ".rds", sep = "");
+#rankedFeaturesFile = paste("ff_", as.character(nTrainData), fScheme, ".rds", sep = "");
+featureFile        = paste("featurized", fScheme, ".rds", sep = "");
 testFeatureFile    = paste("testFeaturized", fScheme, ".rds", sep = "");
-svmFile            = paste("svm_", as.character(nTrainData), fScheme, ".rds", sep = "");
 
 fSubSchemes = c("_PSF","_nGrams", "_nGDip");
 
 # Generate combined feature ranking
-if (!file.exists(rankedFeaturesFile)) {
-  combFeatureNames = c();
-  combFeatureScores = c();
-  for (fSubScheme in fSubSchemes) {
-    curRFmodelFile = paste("rfmodel_", as.character(nTrainData), fSubScheme, ".rds", sep = "");
-    curRFModel = readRDS(curRFmodelFile);
-    
-    curScores = scale(curRFModel$importance[,3]);
-    combFeatureScores = c(combFeatureScores, curScores);
-    combFeatureNames = c(combFeatureNames, rownames(curScores));
-  }
-  
-  saveRDS(combFeatureNames[order(-combFeatureScores)], rankedFeaturesFile);
-  
-} else {
-  cat(as.character(Sys.time()),">> Computing feature ranking ...\n");
-  rankedFeatures = readRDS(rankedFeaturesFile);
-  cat(as.character(Sys.time()),">> Done ( from cached file:", rankedFeaturesFile, ")\n");
-}
+# if (!file.exists(rankedFeaturesFile)) {
+#   combFeatureNames = c();
+#   combFeatureScores = c();
+#   for (fSubScheme in fSubSchemes) {
+#     curRFmodelFile = paste("rfmodel_", as.character(nTrainData), fSubScheme, ".rds", sep = "");
+#     curRFModel = readRDS(curRFmodelFile);
+#     
+#     curScores = scale(curRFModel$importance[,3]);
+#     combFeatureScores = c(combFeatureScores, curScores);
+#     combFeatureNames = c(combFeatureNames, rownames(curScores));
+#   }
+#   
+#   saveRDS(combFeatureNames[order(-combFeatureScores)], rankedFeaturesFile);
+#   
+# } else {
+#   cat(as.character(Sys.time()),">> Computing feature ranking ...\n");
+#   rankedFeatures = readRDS(rankedFeaturesFile);
+#   cat(as.character(Sys.time()),">> Done ( from cached file:", rankedFeaturesFile, ")\n");
+# }
 
 # Generate combined feature vectors for training and test sets
 
 cat(as.character(Sys.time()),">> Combining Training set features ...\n");
 if (!file.exists(featureFile)) {
-  fileNamePrefix = paste("featurized_", as.character(nTrainData), sep = "");
+  fileNamePrefix = paste("featurized", sep = "");
   features = combineFeatures(fSubSchemes, fileNamePrefix);
   saveRDS(features, featureFile);
   cat(as.character(Sys.time()),">> Done. Saved to ", featureFile, "\n");

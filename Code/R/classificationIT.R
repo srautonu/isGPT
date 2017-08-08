@@ -8,15 +8,14 @@ bestParams = NULL;
 accData = NULL;
 
 svmCostList = c(0.1, 1, 10, 100);
-featureCountList = seq(from=2850, to=4000, by=50); 
+featureCountList = seq(from=2850, to=5000, by=50); 
 
 cat(as.character(Sys.time()),">> Entering independent validation ...\n");
 
 for (maxFeatureCount in featureCountList) 
 {
-  filteringRes = featurefiltering(features, testFeatures, rankedFeatures, maxFeatureCount);
-  trainingSet = filteringRes$trainingSet;
-  testSet = filteringRes$testSet;
+  trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
+  testSet = featurefiltering(testFeatures, rankedFeatures, maxFeatureCount);
   
   for (svmC in svmCostList) 
   {
@@ -63,6 +62,9 @@ for (maxFeatureCount in featureCountList)
 
 cat("Best Result for <nF, C> = ", bestParams$maxFeatureCount, bestParams$svmC, "\n");
 cat("Accuracy(Test set): ", bestPerf$acc, "\n");
+cat("F1-Score (Test set): ", bestPerf$f1, "\n");
+cat("Precision(Test set): ", bestPerf$prec, "\n");
+cat("Recall   (Test set): ", bestPerf$rec, "\n");
 cat("Sensitivity(Test set): ", bestPerf$sens, "\n");
 cat("Specificity(Test set): ", bestPerf$spec, "\n")
 cat("MCC(Test set): ", bestPerf$mcc, "\n")
