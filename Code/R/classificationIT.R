@@ -62,6 +62,9 @@ for (maxFeatureCount in featureCountList)
 
 cat("Best Result for <nF, C> = ", bestParams$maxFeatureCount, bestParams$svmC, "\n");
 cat("Accuracy(Test set): ", bestPerf$acc, "\n");
+cat("F1-Score (Test set): ", bestPerf$f1, "\n");
+cat("Precision(Test set): ", bestPerf$prec, "\n");
+cat("Recall   (Test set): ", bestPerf$rec, "\n");
 cat("Sensitivity(Test set): ", bestPerf$sens, "\n");
 cat("Specificity(Test set): ", bestPerf$spec, "\n")
 cat("MCC(Test set): ", bestPerf$mcc, "\n")
