@@ -14,15 +14,23 @@ bestPerf = NULL;
 bestParams = NULL;
 accData = NULL;
 
-svmCostList = c(0.30, 1, 3, 10, 30, 100);
-featureCountList = seq(from=2800, to=1500, by=-50); 
+svmCostList = c(0.01, 0.1, 1, 10, 100);
+featureCountList = seq(from=1500, to=2800, by=50); 
 
 cat(as.character(Sys.time()),">> Entering cross validation. Folds = ", nFolds, " ...\n");
 
+pseAAC = read.csv("pseAAC.csv");
+features = cbind(pseAAC, features);
+
+# Reduce the feature vectors to the max size that we will be testing.
+# This way the filtering cost in the loop below will be reduced.
+features = featurefiltering(features, rankedFeatures, max(featureCountList));
+
+
 for (maxFeatureCount in featureCountList) 
 {
-  filteringRes = featurefiltering(features, testFeatures, rankedFeatures, maxFeatureCount);
-  trainingSet = filteringRes$trainingSet;
+  trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
+  trainingSet = cbind(pseAAC, trainingSet);
 
   for (svmC in svmCostList) 
   {
@@ -48,9 +56,6 @@ for (maxFeatureCount in featureCountList)
 
 cat("Best Result for <nF, C> = ", bestParams$maxFeatureCount, bestParams$svmC, "\n");
 cat("Accuracy(Test set): ", bestPerf$acc, "\n");
-cat("F1-Score (Test set): ", bestPerf$f1, "\n");
-cat("Precision(Test set): ", bestPerf$prec, "\n");
-cat("Recall   (Test set): ", bestPerf$rec, "\n");
 cat("Sensitivity(Test set): ", bestPerf$sens, "\n");
 cat("Specificity(Test set): ", bestPerf$spec, "\n")
 cat("MCC(Test set): ", bestPerf$mcc, "\n")
