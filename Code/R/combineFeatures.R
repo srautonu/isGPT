@@ -1,10 +1,10 @@
 combineFeatures <-
-  function(featureSchemes, subFeatureFilePrefix) {
+  function(subFeatureFilePrefix, featureSchemes, balancing) {
 
     features = NULL;
     protection = NULL;
     for (fScheme in featureSchemes) {
-      curFeatureFile = paste(subFeatureFilePrefix, fScheme, ".rds", sep = "");
+      curFeatureFile = paste(subFeatureFilePrefix, fScheme, balancing, ".rds", sep = "");
       curFeatures = readRDS(curFeatureFile);
       curFeatures$ID <- seq.int(nrow(curFeatures))
       cat(as.character(Sys.time()),">> Read file: ", curFeatureFile, "\n");

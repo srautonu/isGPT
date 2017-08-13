@@ -7,8 +7,10 @@ source('featurefiltering.R');
 
 timestamp();
 
-rngSeed = 10;
-fScheme = "_combined";
+set.seed(10);
+
+balancing = "_SMOTED";
+fScheme   = "_comb_pseAAC";
 
 amins = c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y");
 
@@ -21,14 +23,15 @@ nTrain = length(nTrainingSet[,1])
 nTest = length(nTestSet[,1])
 
 # File names #
-rfmodelFile = "RFModel_FullFeatureSet.rds";
-rankedFeaturesFile = "rankedFeatures.rds";
+fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
 
-featureFile = "featurized_comb_SMOTED.rds";
-testFile = "testFeaturized_comb.rds";
+rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
+featureFile        = paste("featurized"    , fileNameSuffix, sep = "");
+testFeatureFile    = paste("testFeaturized", fScheme,".rds", sep = "");
+svmFile            = paste("svm"           , fileNameSuffix, sep = "");
+rfmodelFile        = paste("rfmodel"       , fileNameSuffix, sep = "");
 
-svmFile     = paste("svm_", as.character(nTrain), fScheme, ".rds", sep = "");
-outFile     = paste("out_", as.character(nTrain), fScheme, ".csv", sep = "");
+outFile            = paste("out", fScheme, balancing, ".csv", sep = "");
 
 cat(as.character(Sys.time()),">> Featurizing ...\n");
 if (!file.exists(featureFile)) {
@@ -37,13 +40,13 @@ if (!file.exists(featureFile)) {
   features = featurizeddata[1:nTrain,]; 
   testFeatures = featurizeddata[(nTrain+1):(nTrain+nTest),];
   saveRDS(features, featureFile);
-  saveRDS(testFeatures, testFile);
+  saveRDS(testFeatures, testFeatureFile);
   cat(as.character(Sys.time()),">> Done.\n");
 } else {
   features = readRDS(featureFile);
   cat(as.character(Sys.time()),">> Done ( from cached file:", featureFile, ")\n");
-  testFeatures = readRDS(testFile);
-  cat(as.character(Sys.time()),">> Done ( from cached file:", testFile, ")\n");
+  testFeatures = readRDS(testFeatureFile);
+  cat(as.character(Sys.time()),">> Done ( from cached file:", testFeatureFile, ")\n");
 }
 cat(as.character(Sys.time()),">> Total features: ", length(features[1,]), "\n");
 
@@ -66,5 +69,4 @@ if (!file.exists(rankedFeaturesFile)) {
   cat(as.character(Sys.time()),">> Computing feature ranking ...\n");
   rankedFeatures = readRDS(rankedFeaturesFile);
   cat(as.character(Sys.time()),">> Done ( from cached file:", rankedFeaturesFile, ")\n");
-  
 }
