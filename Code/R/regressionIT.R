@@ -69,10 +69,10 @@ for (maxFeatureCount in featureCountList)
   
   predAndTruth = prediction(as.numeric(pred >= threshold), testSet$protection);
   
-  acc = unlist(ROCR::performance(svmprediction,"acc")@y.values)[2]
-  sensitivity = unlist(ROCR::performance(svmprediction,"sens")@y.values)[2];
-  specificity = unlist(ROCR::performance(svmprediction,"spec")@y.values)[2];
-  mccv = unlist(ROCR::performance(svmprediction,"mat")@y.values)[2];
+  acc = unlist(ROCR::performance(predAndTruth,"acc")@y.values)[2]
+  sensitivity = unlist(ROCR::performance(predAndTruth,"sens")@y.values)[2];
+  specificity = unlist(ROCR::performance(predAndTruth,"spec")@y.values)[2];
+  mcc = unlist(ROCR::performance(predAndTruth,"mat")@y.values)[2];
   
   perf = list(
     "acc" = acc,
