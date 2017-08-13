@@ -1,12 +1,5 @@
-# featureFileNames =  c(
-#   "featurized_nGDip_SMOTED",
-#   "featurized_nGrams_SMOTED",
-#   "featurized_PSF_SMOTED",
-#   "featurized_comb_SMOTED"
-# );
-
 featureFileNames =  c(
-  "featurized_pseAAC_SMOTED"
+  "testPseAAC"
 );
 
 

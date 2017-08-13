@@ -1,4 +1,38 @@
-source('base.R')
+library(e1071)
+library(ROCR)
+library(randomForest)
+
+source('featurefiltering.R');
+
+timestamp();
+
+set.seed(10);
+
+balancing = "_SMOTED";
+fScheme   = "_comb_pseAAC_special";
+
+# File names #
+fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
+
+rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
+featureFile        = paste("featurized"    , fileNameSuffix, sep = "");
+testFeatureFile    = paste("testFeaturized", fScheme,".rds", sep = "");
+svmFile            = paste("svm"           , fileNameSuffix, sep = "");
+rfmodelFile        = paste("rfmodel"       , fileNameSuffix, sep = "");
+
+outFile            = paste("out", fScheme, balancing, ".csv", sep = "");
+
+cat(as.character(Sys.time()),">> Reading training set features from", featureFile, "...\n");
+features = readRDS(featureFile);
+cat(as.character(Sys.time()),">> Done\n");
+
+cat(as.character(Sys.time()),">> Reading test set features from", testFeatureFile, "...\n");
+testFeatures = readRDS(testFeatureFile);
+cat(as.character(Sys.time()),">> Done\n");
+
+cat(as.character(Sys.time()),">> Reading feature ranking from", rankedFeaturesFile, "...\n");
+rankedFeatures = readRDS(rankedFeaturesFile);
+cat(as.character(Sys.time()),">> Done\n");
 
 # random shuffle of features
 features <- features[sample(nrow(features)),]
@@ -7,8 +41,7 @@ bestPerf = NULL;
 bestParams = NULL;
 accData = NULL;
 
-svmCostList = c(0.01, 0.1, 1, 10, 100);
-featureCountList = seq(from=1500, to=2800, by=50);
+featureCountList = seq(from=4000, to=2, by=-10);
 
 cat(as.character(Sys.time()),">> Entering independent validation ...\n");
 
@@ -22,44 +55,43 @@ for (maxFeatureCount in featureCountList)
   trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
   testSet = featurefiltering(testFeatures, rankedFeatures, maxFeatureCount);
   
-  for (svmC in svmCostList) 
-  {
-    svmmodel = svm(protection ~ ., trainingSet, kernel = "linear", cost = svmC, scale = TRUE);
-    svmpred = predict(svmmodel, testSet);
-    svmprediction = prediction(as.numeric(svmpred), as.numeric(testSet$protection));
+  model = randomForest(protection ~ ., trainingSet, importance = TRUE);
+  rankedFeatures = rownames(model$importance[order(-model$importance[,3]),]);
+  
+  pred = predict(model, testSet);
+  predAndTruth = prediction(pred, testSet$protection);
     
-    acc = unlist(ROCR::performance(svmprediction,"acc")@y.values)[2]
-    sensitivity = unlist(ROCR::performance(svmprediction,"sens")@y.values)[2];
-    specificity = unlist(ROCR::performance(svmprediction,"spec")@y.values)[2];
-    mccv = unlist(ROCR::performance(svmprediction,"mat")@y.values)[2];
+  acc = unlist(ROCR::performance(predAndTruth,"acc")@y.values)[2]
+  sensitivity = unlist(ROCR::performance(predAndTruth,"sens")@y.values)[2];
+  specificity = unlist(ROCR::performance(predAndTruth,"spec")@y.values)[2];
+  mcc = unlist(ROCR::performance(predAndTruth,"mat")@y.values)[2];
     
-    perf = list(
-      "acc" = acc,
-      "sens" = sensitivity,
-      "spec" = specificity,
-      "mcc" = mccv
-    )
-    cat(maxFeatureCount, ",", svmC, ",", perf$acc, ",", perf$sens, ",", perf$spec, ",", perf$mcc);
+  perf = list(
+    "acc" = acc,
+    "sens" = sensitivity,
+    "spec" = specificity,
+    "mcc" = mcc
+  )
+  cat(maxFeatureCount, ",", perf$acc, ",", perf$sens, ",", perf$spec, ",", perf$mcc);
     
-    accData = rbind(accData, c(maxFeatureCount, svmC, perf$acc, perf$sens, perf$spec, perf$mcc));
-    write.csv(accData, outFile);
-    
-    if (!is.nan(perf$mcc)) {
-      if (is.null(bestPerf) || bestPerf$mcc < perf$mcc) {
-        bestPerf = perf;
-        bestParams = list(
-          "maxFeatureCount" = maxFeatureCount,
-          "svmC" = svmC
-        )
-        cat(",<-- BEST");
-      }
+  accData = rbind(accData, c(maxFeatureCount, perf$acc, perf$sens, perf$spec, perf$mcc));
+  write.csv(accData, outFile);
+  
+  if (!is.nan(perf$mcc)) {
+    if (is.null(bestPerf) || bestPerf$mcc < perf$mcc) {
+      bestPerf = perf;
+      bestParams = list(
+        "maxFeatureCount" = maxFeatureCount,
+        "featureSet"      = rankedFeatures
+      )
+      cat(",<-- BEST");
     }
-    
-    cat("\n");
   }
+    
+  cat("\n");
 }
 
-cat("Best Result for <nF, C> = ", bestParams$maxFeatureCount, bestParams$svmC, "\n");
+cat("Best Result for <nF> = ", bestParams$maxFeatureCount, "\n");
 cat("Accuracy(Test set): ", bestPerf$acc, "\n");
 cat("Sensitivity(Test set): ", bestPerf$sens, "\n");
 cat("Specificity(Test set): ", bestPerf$spec, "\n")

@@ -13,5 +13,6 @@ for (proteinSeq in input$Sequence) {
   pseAAC = rbind(pseAAC, t);
 }
 
-pseAAC$protection = input$protection;
-write.csv(pseAAC, outputFile, row.names = FALSE)
+pseAAC = cbind(pseAAC, as.character(input$Class));
+colnames(pseAAC)[length(colnames(pseAAC))] = "protection";
+write.csv(pseAAC, outputFile, row.names = FALSE);
