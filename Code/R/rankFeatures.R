@@ -5,7 +5,7 @@ timestamp();
 set.seed(10);
 
 balancing = "_SMOTED";
-fScheme = "_pseAAC";
+fScheme = "_comb_pseAAC_special";
 
 fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
 
