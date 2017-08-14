@@ -2,7 +2,7 @@ source('./combineFeatures.R');
 
 timestamp();
 
-balancing = "_SMOTED";
+balancing = "";
 fScheme   = "_comb_pseAAC";
 
 fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
