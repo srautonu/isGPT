@@ -3,7 +3,7 @@ library(ROCR)
 library(randomForest)
 
 source('featurefiltering.R');
-source('svmCV.R')
+source('randomforestCV.R');
 
 timestamp();
 
@@ -27,19 +27,9 @@ cat(as.character(Sys.time()),">> Reading training set features from", featureFil
 features = readRDS(featureFile);
 cat(as.character(Sys.time()),">> Done\n");
 
-cat(as.character(Sys.time()),">> Reading test set features from", testFeatureFile, "...\n");
-testFeatures = readRDS(testFeatureFile);
-cat(as.character(Sys.time()),">> Done\n");
-
 cat(as.character(Sys.time()),">> Reading feature ranking from", rankedFeaturesFile, "...\n");
 rankedFeatures = readRDS(rankedFeaturesFile);
 cat(as.character(Sys.time()),">> Done\n");
-
-# jackknife
-#nFolds = length(features[,1])
-
-# 10 fold CV
-nFolds = 10
 
 # random shuffle of features
 features <- features[sample(nrow(features)),]
@@ -47,49 +37,47 @@ features <- features[sample(nrow(features)),]
 bestPerf = NULL;
 bestParams = NULL;
 accData = NULL;
+prevModel = NULL;
 
-#svmCostList = c(0.01, 0.1, 1, 10, 100);
-featureCountList = seq(from=4000, to=2000, by=50); 
+featureCountList = seq(from=4000, to=1000, by=-500);
 
-cat(as.character(Sys.time()),">> Entering cross validation. Folds = ", nFolds, " ...\n");
-
-pseAAC = read.csv("pseAAC.csv");
-features = cbind(pseAAC, features);
+cat(as.character(Sys.time()),">> Entering random forest RFE ...\n");
 
 # Reduce the feature vectors to the max size that we will be testing.
 # This way the filtering cost in the loop below will be reduced.
-features = featurefiltering(features, rankedFeatures, max(featureCountList));
-
+features     = featurefiltering(features, rankedFeatures, max(featureCountList));
 
 for (maxFeatureCount in featureCountList) 
 {
   trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
-  trainingSet = cbind(pseAAC, trainingSet);
 
-  for (svmC in svmCostList) 
-  {
-    perf = svmCV(protection ~ ., trainingSet, svmCost = svmC, cross = nFolds);
-
-    cat(maxFeatureCount, ",", svmC, ",", perf$acc, ",", perf$sens, ",", perf$spec, ",", perf$mcc);
+  perf = randomForestCV(protection ~., trainingSet, TRUE, 10);
+  model = perf$model;
+  rankedFeatures = rownames(model$importance[order(-model$importance[,3]),]);
+  
+  cat(maxFeatureCount, ",", perf$acc, ",", perf$sens, ",", perf$spec, ",", perf$mcc);
     
-    accData = rbind(accData, c(maxFeatureCount, svmC, perf$acc, perf$sens, perf$spec, perf$mcc));
-    write.csv(accData, outFile);
-    
-    if (is.null(bestPerf) || bestPerf$mcc < perf$mcc) {
+  accData = rbind(accData, c(maxFeatureCount, perf$acc, perf$sens, perf$spec, perf$mcc));
+  write.csv(accData, outFile);
+  
+  if (!is.nan(perf$mcc)) {
+    if (is.null(bestPerf) || bestPerf$mcc <= perf$mcc) {
+      if (!is.null(bestPerf)) {
+        prevModel = bestPerf$model;
+      }
       bestPerf = perf;
-      bestParams = list(
-        "maxFeatureCount" = maxFeatureCount,
-        "svmC" = svmC
-      )
       cat(",<-- BEST");
     }
-    
-    cat("\n");
   }
+    
+  cat("\n");
 }
 
-cat("Best Result for <nF, C> = ", bestParams$maxFeatureCount, bestParams$svmC, "\n");
+cat("Best Result:\n");
 cat("Accuracy(Test set): ", bestPerf$acc, "\n");
 cat("Sensitivity(Test set): ", bestPerf$sens, "\n");
-cat("Specificity(Test set): ", bestPerf$spec, "\n")
-cat("MCC(Test set): ", bestPerf$mcc, "\n")
+cat("Specificity(Test set): ", bestPerf$spec, "\n");
+cat("MCC(Test set): ", bestPerf$mcc, "\n");
+
+saveRDS(bestPerf$model, "bestModel.rds");
+saveRDS(prevModel, "prevModel.rds");
