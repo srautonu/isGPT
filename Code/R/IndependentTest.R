@@ -8,6 +8,10 @@ timestamp();
 
 #set.seed(10);
 
+DoRegression    = TRUE;
+svmC            = 10;
+maxFeatureCount = 2800; # 2650, 2500
+
 balancing = "_SMOTED";
 fScheme   = "_comb";
 
@@ -35,29 +39,58 @@ cat(as.character(Sys.time()),">> Done\n");
 # random shuffle of features
 features <- features[sample(nrow(features)),]
 
-svmC = 10;
-maxFeatureCount = 2800; 
+# For regression study, we need to 'unfactor' the dependent var.
+#
+if (DoRegression) {
+  
+  # Cis-Golgi becomes 1 and Trans-Golgi becomes 2.
+  # But we want Cis-Golgi (positive class) to be 1 and Trans-Golgi to be 0
+  features$protection = 2 - as.numeric(features$protection);
+  testFeatures$protection  = 2 - as.numeric(testFeatures$protection);
+}
 
 cat(as.character(Sys.time()),">> Entering independent validation ...\n");
-
-# Reduce the feature vectors to the max size that we will be testing.
-# This way the filtering cost in the loop below will be reduced.
-features     = featurefiltering(features, rankedFeatures, max(featureCountList));
-testFeatures = featurefiltering(testFeatures, rankedFeatures, max(featureCountList));
 
 trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
 testSet = featurefiltering(testFeatures, rankedFeatures, maxFeatureCount);
 
 model = svm(protection ~ ., trainingSet, cost = svmC, kernel="linear");
 pred = predict(model, testSet);
-predAndTruth = prediction(as.numeric(pred), as.numeric(testSet$protection));
+
+if (DoRegression) {
+  # perform regression based perf. measurements
+
+  # Find optimal threshold based on accuracy
+  # Also find the AUCROC
+  predAndTruth = prediction(pred, testSet$protection);
+  auc  = ROCR::performance(predAndTruth,"auc")@y.values[[1]];
+  
+  accSeries = ROCR::performance(predAndTruth,"acc");
+  threshold = unlist(accSeries@x.values)[[which.max(unlist(accSeries@y.values))]];
+  #threshold = 0.5;
+  
+  cat("AUCROC     : ", auc, "\n");
+  cat("Threshold  : ", threshold, "\n");
+  
+  predAndTruth = prediction(as.numeric(pred >= threshold), testSet$protection);
+} else {
+  predAndTruth = prediction(as.numeric(pred), as.numeric(testSet$protection));
+}
   
 acc  = unlist(ROCR::performance(predAndTruth,"acc")@y.values)[2]
 sens = unlist(ROCR::performance(predAndTruth,"sens")@y.values)[2];
 spec = unlist(ROCR::performance(predAndTruth,"spec")@y.values)[2];
 mcc  = unlist(ROCR::performance(predAndTruth,"mat")@y.values)[2];
 
-cat("Accuracy(Test set)   : ", acc, "\n");
-cat("Sensitivity(Test set): ", sens, "\n");
-cat("Specificity(Test set): ", spec, "\n")
-cat("MCC(Test set)        : ", mcc, "\n")
+if (DoRegression) {
+  # For regression we set Cis-Golgi to 1. So, sens is accuracy of Cis-Golgi
+  # Let's swap the sens and spec
+  temp = sens;
+  sens = spec;
+  spec = temp;
+}
+
+cat("Accuracy (Overall)    : ", acc, "\n");
+cat("Accuracy (Trans-Golgi): ", sens, "\n");
+cat("Accuracy (Cis-Golgi)  : ", spec, "\n")
+cat("MCC                   : ", mcc, "\n")
