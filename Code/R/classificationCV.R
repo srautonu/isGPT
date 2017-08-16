@@ -7,15 +7,16 @@ source('svmCV.R')
 
 timestamp();
 
-set.seed(10);
+#set.seed(10);
 
 balancing = "_SMOTED";
-fScheme   = "_comb_pseAAC";
+fScheme   = "_comb";
 
 # File names #
 fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
 
-rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
+rankedFeaturesFile  = "rankedFeatures.rds" 
+#rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
 featureFile        = paste("featurized"    , fileNameSuffix, sep = "");
 testFeatureFile    = paste("testFeaturized", fScheme,".rds", sep = "");
 svmFile            = paste("svm"           , fileNameSuffix, sep = "");
@@ -36,10 +37,10 @@ rankedFeatures = readRDS(rankedFeaturesFile);
 cat(as.character(Sys.time()),">> Done\n");
 
 # jackknife
-#nFolds = length(features[,1])
+nFolds = length(features[,1])
 
 # 10 fold CV
-nFolds = 10
+#nFolds = 10
 
 # random shuffle of features
 features <- features[sample(nrow(features)),]
@@ -48,23 +49,21 @@ bestPerf = NULL;
 bestParams = NULL;
 accData = NULL;
 
-#svmCostList = c(0.01, 0.1, 1, 10, 100);
-featureCountList = seq(from=4000, to=2000, by=50); 
+# svmCostList = c(0.3, 1, 3, 10, 30, 100);
+# featureCountList = seq(from=2800, to=1500, by=-50); 
+
+svmCostList = c(10);
+featureCountList = seq(from=2800, to=2800, by=50); 
 
 cat(as.character(Sys.time()),">> Entering cross validation. Folds = ", nFolds, " ...\n");
-
-pseAAC = read.csv("pseAAC.csv");
-features = cbind(pseAAC, features);
 
 # Reduce the feature vectors to the max size that we will be testing.
 # This way the filtering cost in the loop below will be reduced.
 features = featurefiltering(features, rankedFeatures, max(featureCountList));
 
-
 for (maxFeatureCount in featureCountList) 
 {
   trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
-  trainingSet = cbind(pseAAC, trainingSet);
 
   for (svmC in svmCostList) 
   {

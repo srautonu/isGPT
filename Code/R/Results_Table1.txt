@@ -1,71 +1,31 @@
-Regression Result:
+2017-08-15 23:20:32 >> Entering cross validation. Folds =  10  ...
+2800 , 10 , 0.9493088 , 0.9447005 , 0.9539171 , 0.8986557,<-- BEST
+Best Result for <nF, C> =  2800 10 
+Accuracy(Test set):  0.9493088 
+Sensitivity(Test set):  0.9447005 
+Specificity(Test set):  0.9539171 
+MCC(Test set):  0.8986557 
 
-10-fold cross-validation  (with SMOTE)
-Best Result:
-<nF, C, Acc> =  2250 0.01 0.9835526 
-Accuracy(Test set):  0.9835526 
-F1-Score (Test set):  0.9886105 
-MCC(Test set):  0.9598441 
+2017-08-15 23:24:07 >> Entering cross validation. Folds =  434  ...
+2800 , 10 , 0.9493088 , 0.9400922 , 0.9585253 , 0.8987702,<-- BEST
+Best Result for <nF, C> =  2800 10 
+Accuracy(Test set):  0.9493088 
+Sensitivity(Test set):  0.9400922 
+Specificity(Test set):  0.9585253 
+MCC(Test set):  0.8987702 
+> 
 
-Independent Test (with SMOTE):
-Accuracy(Test set):  0.9375 
-F1-Score (Test set):  0.9622642 
-MCC(Test set):  0.8012228 
+Test Validation
 
-Independent Test (without SMOTE):
-Accuracy(Test set):  0.9375 
-F1-Score (Test set):  0.9622642 
-MCC(Test set):  0.8012228
-
-Regression Result (without SMOTE):
-10-fold cross-validation:
-<nF, C, Acc> =  2250 0.01 0.9835526 
-Accuracy(Test set):  0.9835526 
-F1-Score (Test set):  0.9886105 
-MCC(Test set):  0.9598441
-
-===========================================
+Accuracy(Test set)   :  0.9375 
+Sensitivity(Test set):  0.9803922 
+Specificity(Test set):  0.7692308 
+MCC(Test set)        :  0.7994022 
 
 
-Classification Model
+TODO:
 
-10-fold Cross Validation Testing.... (without SMOTE)
-Accuracy(Test set):  0.9835526 
-F1-Score (Test set):  0.9885584 
-Precision(Test set):  0.9818182 
-Recall   (Test set):  0.9953917 
-Sensitivity(Test set):  0.9953917 
-Specificity(Test set):  0.954023 
-MCC(Test set):  0.9596093 
-
-10-fold Cross Validation Testing....(with SMOTE)
-
-Accuracy(Test set):  0.9913793 
-F1-Score (Test set):  0.9913043 
-Precision(Test set):  1 
-Recall   (Test set):  0.9827586 
-Sensitivity(Test set):  0.9827586 
-Specificity(Test set):  1 
-MCC(Test set):  0.9829047 
-
-
-
-Independent Testing.... (with SMOTE)
-
-Accuracy(Test set):  0.9423077 
-F1-Score (Test set):  0.9454545 
-Precision(Test set):  0.8965517 
-Recall   (Test set):  1 
-Sensitivity(Test set):  1 
-Specificity(Test set):  0.8846154 
-MCC(Test set):  0.8905636
-
-Independent Testing.... (without SMOTE)
-
-Accuracy(Test set):  0.96875 
-F1-Score (Test set):  0.9807692 
-Precision(Test set):  0.9622642 
-Recall   (Test set):  1 
-Sensitivity(Test set):  1 
-Specificity(Test set):  0.8461538 
-MCC(Test set):  0.9053433 
+1. Discussion on independent dataset
+2. Confusion matrix for all the results
+3. Discrepency in Ahmad et al. data
+4. Note on time to compute PSSM

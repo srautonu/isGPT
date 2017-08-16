@@ -6,21 +6,19 @@ source('featurefiltering.R');
 
 timestamp();
 
-set.seed(10);
+#set.seed(10);
 
 balancing = "_SMOTED";
-fScheme   = "_comb_pseAAC_special";
+fScheme   = "_comb";
 
 # File names #
 fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
 
-rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
+rankedFeaturesFile  = "rankedFeatures.rds";
+#rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
 featureFile        = paste("featurized"    , fileNameSuffix, sep = "");
 testFeatureFile    = paste("testFeaturized", fScheme,".rds", sep = "");
 svmFile            = paste("svm"           , fileNameSuffix, sep = "");
-rfmodelFile        = paste("rfmodel"       , fileNameSuffix, sep = "");
-
-outFile            = paste("out", fScheme, balancing, ".csv", sep = "");
 
 cat(as.character(Sys.time()),">> Reading training set features from", featureFile, "...\n");
 features = readRDS(featureFile);
@@ -37,11 +35,8 @@ cat(as.character(Sys.time()),">> Done\n");
 # random shuffle of features
 features <- features[sample(nrow(features)),]
 
-bestPerf = NULL;
-bestParams = NULL;
-accData = NULL;
-
-featureCountList = seq(from=4000, to=2, by=-10);
+svmC = 10;
+maxFeatureCount = 2800; 
 
 cat(as.character(Sys.time()),">> Entering independent validation ...\n");
 
@@ -50,49 +45,19 @@ cat(as.character(Sys.time()),">> Entering independent validation ...\n");
 features     = featurefiltering(features, rankedFeatures, max(featureCountList));
 testFeatures = featurefiltering(testFeatures, rankedFeatures, max(featureCountList));
 
-for (maxFeatureCount in featureCountList) 
-{
-  trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
-  testSet = featurefiltering(testFeatures, rankedFeatures, maxFeatureCount);
-  
-  model = randomForest(protection ~ ., trainingSet, importance = TRUE);
-  rankedFeatures = rownames(model$importance[order(-model$importance[,3]),]);
-  
-  pred = predict(model, testSet);
-  predAndTruth = prediction(pred, testSet$protection);
-    
-  acc = unlist(ROCR::performance(predAndTruth,"acc")@y.values)[2]
-  sensitivity = unlist(ROCR::performance(predAndTruth,"sens")@y.values)[2];
-  specificity = unlist(ROCR::performance(predAndTruth,"spec")@y.values)[2];
-  mcc = unlist(ROCR::performance(predAndTruth,"mat")@y.values)[2];
-    
-  perf = list(
-    "acc" = acc,
-    "sens" = sensitivity,
-    "spec" = specificity,
-    "mcc" = mcc
-  )
-  cat(maxFeatureCount, ",", perf$acc, ",", perf$sens, ",", perf$spec, ",", perf$mcc);
-    
-  accData = rbind(accData, c(maxFeatureCount, perf$acc, perf$sens, perf$spec, perf$mcc));
-  write.csv(accData, outFile);
-  
-  if (!is.nan(perf$mcc)) {
-    if (is.null(bestPerf) || bestPerf$mcc < perf$mcc) {
-      bestPerf = perf;
-      bestParams = list(
-        "maxFeatureCount" = maxFeatureCount,
-        "featureSet"      = rankedFeatures
-      )
-      cat(",<-- BEST");
-    }
-  }
-    
-  cat("\n");
-}
+trainingSet = featurefiltering(features, rankedFeatures, maxFeatureCount);
+testSet = featurefiltering(testFeatures, rankedFeatures, maxFeatureCount);
 
-cat("Best Result for <nF> = ", bestParams$maxFeatureCount, "\n");
-cat("Accuracy(Test set): ", bestPerf$acc, "\n");
-cat("Sensitivity(Test set): ", bestPerf$sens, "\n");
-cat("Specificity(Test set): ", bestPerf$spec, "\n")
-cat("MCC(Test set): ", bestPerf$mcc, "\n")
+model = svm(protection ~ ., trainingSet, cost = svmC, kernel="linear");
+pred = predict(model, testSet);
+predAndTruth = prediction(as.numeric(pred), as.numeric(testSet$protection));
+  
+acc  = unlist(ROCR::performance(predAndTruth,"acc")@y.values)[2]
+sens = unlist(ROCR::performance(predAndTruth,"sens")@y.values)[2];
+spec = unlist(ROCR::performance(predAndTruth,"spec")@y.values)[2];
+mcc  = unlist(ROCR::performance(predAndTruth,"mat")@y.values)[2];
+
+cat("Accuracy(Test set)   : ", acc, "\n");
+cat("Sensitivity(Test set): ", sens, "\n");
+cat("Specificity(Test set): ", spec, "\n")
+cat("MCC(Test set)        : ", mcc, "\n")
