@@ -1,5 +1,6 @@
 featurefiltering <-
   function(features, rankedFeatures, maxFeatureCount = Inf) {
+    maxFeatureCount = min(maxFeatureCount, length(rankedFeatures));
     columns = colnames(features)
     featureFilter = rankedFeatures[1:maxFeatureCount];
     featureFilter[length(featureFilter) + 1] = "protection"
