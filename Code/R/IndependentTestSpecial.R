@@ -8,8 +8,8 @@ timestamp();
 
 #set.seed(10);
 
-svmC            = 10;
-maxFeatureCount = 2500; # 2650, 2500
+svmC            = 1;
+maxFeatureCount = 2800;
 
 balancing = "_SMOTED";
 fScheme   = "_comb";
@@ -63,7 +63,7 @@ auc  = ROCR::performance(predAndTruth,"auc")@y.values[[1]];
 
 cat(as.character(Sys.time()),">> Recording performance in results.csv ...\n");
 itData = data.frame(matrix(ncol = 4, nrow = 0))
-for (threshold in seq(from=0.30, to=0.70, by=0.05)) {
+for (threshold in seq(from=0.0, to=1.0, by=0.01)) {
   
   predAndTruth = prediction(as.numeric(pred >= threshold), as.factor(testSet$protection));
   acc  = unlist(ROCR::performance(predAndTruth,"acc")@y.values)[2];
