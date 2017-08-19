@@ -8,4 +8,3 @@ myplot = myplot + theme(panel.grid.major = element_blank(),
                         panel.grid.minor = element_blank()
                         );
 myplot;
-

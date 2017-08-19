@@ -41,6 +41,8 @@ svmCV <-
       # Also find the AUCROC
       svmprediction = prediction(predVector, data[, dependentVar]);
       auc  = ROCR::performance(svmprediction,"auc")@y.values[[1]];
+      rocCurve = ROCR::performance(svmprediction,"tpr", "fpr");
+      prCurve  = ROCR::performance(svmprediction,"prec", "rec");
       
       accSeries = ROCR::performance(svmprediction,"acc");
       threshold = unlist(accSeries@x.values)[[which.max(unlist(accSeries@y.values))]];
@@ -54,6 +56,8 @@ svmCV <-
       
       return(list(
         "threshold" = threshold,
+        "rocCurve" = rocCurve,
+        "prCurve"  = prCurve,
         "auc" = auc,
         "acc" = acc,
         "sens" = sensitivity,

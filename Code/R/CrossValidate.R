@@ -9,16 +9,14 @@ timestamp();
 #set.seed(10);
 
 DoRegression = TRUE;
-# svmCostList = c(0.3, 1, 3, 10, 30, 100);
-# featureCountList = seq(from=2800, to=1500, by=-50); 
-
 svmCostList = c(0.3, 1, 3, 10, 30, 100);
-featureCountList = c(2800,2650,2500); 
+featureCountList = seq(from=2800, to=1500, by=-50); 
 
 # Set -1 for jackknife
-nFolds = -1
+nFolds = 10
 
-balancing = "_SMOTED";
+#balancing = "_SMOTED";
+balancing = "";
 fScheme   = "_comb";
 
 # File names #
