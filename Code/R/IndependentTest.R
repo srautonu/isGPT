@@ -8,12 +8,13 @@ timestamp();
 
 #set.seed(10);
 
-DoRegression    = TRUE;
+DoRegression    = FALSE;
 
 svmCostList = c(0.3, 1, 3, 10, 30, 100);
-featureCountList = c(2800,2650,2500); 
+featureCountList = c(2050); 
 
-balancing = "_SMOTED";
+#balancing = "_SMOTED";
+balancing = "";
 fScheme   = "_comb";
 
 accData = NULL;
