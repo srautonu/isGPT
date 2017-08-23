@@ -1,6 +1,0 @@
-TODO:
-
-1. Discussion on independent dataset
-2. Confusion matrix for all the results
-3. Discrepency in Ahmad et al. data
-4. Note on time to compute PSSM
