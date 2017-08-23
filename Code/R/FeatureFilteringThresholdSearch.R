@@ -19,7 +19,6 @@ fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
 
 rankedFeaturesFile = "rankedFeatures.rds" 
 featureFile        = paste("featurized"    , fileNameSuffix, sep = "");
-
 outFile            = paste("out", fScheme, balancing, ".csv", sep = "");
 
 cat(as.character(Sys.time()),">> Reading training set features from", featureFile, "...\n");
@@ -84,29 +83,32 @@ for (maxFeatureCount in featureCountList)
 }
 
 
-myTheme = theme_bw() +
+rocCurveFile = paste("ROCCurve", balancing, ".eps", sep = "");
+prCurveFile  = paste("PRCurve",  balancing, ".eps", sep = "");
+
+rocPlot = ggplot(rocCurvePoints,aes(x, y)) + 
+  theme_bw(base_size = 36, base_family = "") +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-  theme(plot.title = element_text(face="bold", size=24, hjust=0)) +
-  theme(axis.title = element_text(face="bold", size=20)) + 
-  theme(axis.text  = element_text(size=16)) +
   theme(legend.title = element_blank()) +
-  theme(legend.text = element_text(size=16)) +
-  theme(aspect.ratio = 0.7)
-
-
-rocPlot = ggplot(rocCurvePoints,aes(x, y));
-rocPlot = rocPlot + geom_line(aes(colour=Features),size = 1.5);
-rocPlot = rocPlot + labs(title= "ROC Curve", x = "False Positive Rate", y = "True Positive Rate");
-rocPlot = rocPlot + myTheme + theme(legend.position = c(0.85, 0.3));
+  theme(legend.position = c(0.85, 0.3)) +
+  theme(aspect.ratio = 0.7) +
+  geom_line(aes(colour=Features),size = 1.5);
+  labs(x = "False Positive Rate", y = "True Positive Rate");
+  
+postscript(file = rocCurveFile, paper = "letter");
 rocPlot;
+dev.off();
 
-#dev.new()
+prPlot = ggplot(prCurvePoints,aes(x, y)) + 
+  theme_bw(base_size = 36, base_family = "") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = c(0.85, 0.3)) +
+  theme(aspect.ratio = 0.7) +
+  geom_line(aes(colour=Features),size = 1.5);
+  labs(title= "PR Curve", x = "Recall", y = "Precision");
 
-prPlot = ggplot(prCurvePoints,aes(x, y));
-prPlot = prPlot + geom_line(aes(colour=Features),size = 1.5);
-prPlot = prPlot + labs(title= "PR Curve", x = "Recall", y = "Precision");
-prPlot = prPlot + theme_bw();
-prPlot = prPlot + myTheme + theme(legend.position = c(0.40, 0.1));
-prPlot;
-
+postscript(file = prCurveFile, paper = "letter");
+rocPlot;
+dev.off();
 

@@ -1,6 +1,5 @@
 library(e1071)
 library(ROCR)
-library(randomForest)
 
 source('featurefiltering.R');
 
@@ -8,13 +7,12 @@ timestamp();
 
 #set.seed(10);
 
-DoRegression    = FALSE;
+DoRegression    = TRUE;
 
-svmCostList = c(0.3, 1, 3, 10, 30, 100);
-featureCountList = c(2050); 
+svmCostList = c(1);
+featureCountList = c(2800); 
 
-#balancing = "_SMOTED";
-balancing = "";
+balancing = "_SMOTED";
 fScheme   = "_comb";
 
 accData = NULL;
@@ -23,10 +21,8 @@ accData = NULL;
 fileNameSuffix = paste(fScheme, balancing, ".rds", sep = "");
 
 rankedFeaturesFile  = "rankedFeatures.rds";
-#rankedFeaturesFile = paste("ff"            , fileNameSuffix, sep = "");
 featureFile        = paste("featurized"    , fileNameSuffix, sep = "");
 testFeatureFile    = paste("testFeaturized", fScheme,".rds", sep = "");
-svmFile            = paste("svm"           , fileNameSuffix, sep = "");
 outFile            = paste("out", fScheme, balancing, ".csv", sep = "");
 
 cat(as.character(Sys.time()),">> Reading training set features from", featureFile, "...\n");
