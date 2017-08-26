@@ -1,6 +1,7 @@
 library(e1071)
 library(ROCR)
 library(pracma)
+library(ggplot2)
 
 source('featurefiltering.R');
 source('svmCV.R')
@@ -90,9 +91,9 @@ rocPlot = ggplot(rocCurvePoints,aes(x, y)) +
   theme_bw(base_size = 36, base_family = "") +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   theme(legend.title = element_blank()) +
-  theme(legend.position = c(0.85, 0.3)) +
+  theme(legend.position = "top") +
   theme(aspect.ratio = 0.7) +
-  geom_line(aes(colour=Features),size = 1.5);
+  geom_line(aes(colour=Features),size = 3) +
   labs(x = "False Positive Rate", y = "True Positive Rate");
   
 postscript(file = rocCurveFile, paper = "letter");
@@ -103,12 +104,12 @@ prPlot = ggplot(prCurvePoints,aes(x, y)) +
   theme_bw(base_size = 36, base_family = "") +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
   theme(legend.title = element_blank()) +
-  theme(legend.position = c(0.85, 0.3)) +
+  theme(legend.position = "top") +
   theme(aspect.ratio = 0.7) +
-  geom_line(aes(colour=Features),size = 1.5);
-  labs(title= "PR Curve", x = "Recall", y = "Precision");
+  geom_line(aes(colour=Features),size = 3) +
+  labs(x = "Recall", y = "Precision");
 
 postscript(file = prCurveFile, paper = "letter");
-rocPlot;
+prPlot;
 dev.off();
 
