@@ -1,5 +1,5 @@
 featureFileNames =  c(
-  "testPseAAC"
+  "testFeaturized_pssm_nGDip25"
 );
 
 

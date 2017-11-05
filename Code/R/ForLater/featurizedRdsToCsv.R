@@ -2,7 +2,7 @@ featureFileNames =  c(
 #  "featurized_nGDip",
 #  "featurized_nGrams",
 #  "featurized_PSF",
-  "featurized_comb"
+  "featurized_pssm_nGDip25"
 );
 
 for (featureFileName in featureFileNames) {
