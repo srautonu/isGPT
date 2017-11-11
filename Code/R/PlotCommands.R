@@ -6,7 +6,7 @@
 
 ###### cumFeatureImpAll.eps ###################
 
-# Data for different feature types within top 2500 features
+# Data for different feature types (All features)
 data = data.frame(`Category` = character(), CumImp = numeric());
 data = rbind(data, data.frame(`Category` = "PSF"    , CumImp = -0.0008415906));
 data = rbind(data, data.frame(`Category` = "n-grams", CumImp = -0.0009376378));
@@ -26,7 +26,7 @@ dev.off();
 
 ###### cumFeatureImp3000.eps ###################
 
-# Data for different feature types within top 2500 features
+# Data for different feature types within top 3000 features
 data = data.frame(`Category` = character(), CumImp = numeric());
 data = rbind(data, data.frame(`Category` = "PSF"    , CumImp = 0.001006389));
 data = rbind(data, data.frame(`Category` = "n-grams", CumImp = 0.02884622));

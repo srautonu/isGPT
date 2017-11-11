@@ -1,4 +1,4 @@
-impindex = 4
+impindex = 3
 rfmodel = readRDS(rfmodelFile);
 rankedt = (rfmodel$importance[order(-rfmodel$importance[,impindex]),])
 cname = rownames(rankedt)
