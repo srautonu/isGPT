@@ -4,11 +4,14 @@
 # theme_bw(base_size = 36, base_family = "") +
 #########################################################
 
+library("ggplot2")
+library("reshape2")
+
 ###### cumFeatureImpAll.eps ###################
 
 # Data for different feature types (All features)
 data = data.frame(`Category` = character(), CumImp = numeric());
-data = rbind(data, data.frame(`Category` = "PSF"    , CumImp = -0.0008415906));
+data = rbind(data, data.frame(`Category` = "PSN"    , CumImp = -0.0008415906));
 data = rbind(data, data.frame(`Category` = "n-grams", CumImp = -0.0009376378));
 data = rbind(data, data.frame(`Category` = "nGDip"  , CumImp = 0.03536461));
 
@@ -28,7 +31,7 @@ dev.off();
 
 # Data for different feature types within top 3000 features
 data = data.frame(`Category` = character(), CumImp = numeric());
-data = rbind(data, data.frame(`Category` = "PSF"    , CumImp = 0.001006389));
+data = rbind(data, data.frame(`Category` = "PSN"    , CumImp = 0.001006389));
 data = rbind(data, data.frame(`Category` = "n-grams", CumImp = 0.02884622));
 data = rbind(data, data.frame(`Category` = "nGDip"  , CumImp = 0.1139051));
 
@@ -48,7 +51,7 @@ dev.off();
 
 # Data for different feature types within top 2500 features
 data = data.frame(`Category` = character(), Accuracy = numeric(), MCC = numeric());
-data = rbind(data, data.frame(`Category` = "PSF"    , Accuracy = 0.65, MCC = .30));
+data = rbind(data, data.frame(`Category` = "PSN"    , Accuracy = 0.65, MCC = .30));
 data = rbind(data, data.frame(`Category` = "n-grams", Accuracy = 0.86, MCC = .72));
 data = rbind(data, data.frame(`Category` = "nGDip"  , Accuracy = 0.94, MCC = .87));
 data = rbind(data, data.frame(`Category` = "COM"    , Accuracy = 0.95, MCC = .91));
@@ -73,7 +76,7 @@ dev.off();
 
 # Data for different feature types each using 2500 features
 data = data.frame(`Category` = character(), Accuracy = numeric(), MCC = numeric());
-data = rbind(data, data.frame(`Category` = "PSF"    , Accuracy = 0.93, MCC = .86));
+data = rbind(data, data.frame(`Category` = "PSN"    , Accuracy = 0.93, MCC = .86));
 data = rbind(data, data.frame(`Category` = "n-grams", Accuracy = 0.93, MCC = .86));
 data = rbind(data, data.frame(`Category` = "nGDip"  , Accuracy = 0.94, MCC = .88));
 data = rbind(data, data.frame(`Category` = "COM"    , Accuracy = 0.95, MCC = .91));
